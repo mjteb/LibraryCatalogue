@@ -4,17 +4,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class CopyOfBook extends Book {
-    boolean availability;
+    boolean availability = true;
     LocalDate dueDate;
     String callNumber;
     double price;
-    ArrayList<LibraryMember> listOfReservations;
+    ArrayList<LibraryMember> listOfReservations = new ArrayList<>();
 
 
-    public CopyOfBook(String title, String author, String isbn, boolean availability, LocalDate dueDate, String callNumber, Language language) {
+    public CopyOfBook(String title, String author, String isbn, String callNumber, Language language) {
         super(title, author, isbn, language);
-        this.availability = availability;
-        this.dueDate = dueDate;
         this.callNumber = callNumber;
     }
 

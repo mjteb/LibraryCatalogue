@@ -2,61 +2,70 @@ package libraryCatalogue;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LibraryManagementSystem {
-    private static ArrayList<LibraryMember> libraryMembersList;
-    private static ArrayList<CopyOfBook> copyOfBookList;
-private double libraryAccountBudget;
+    private static ArrayList<LibraryMember> libraryMembersList = new ArrayList<>();
+    private static ArrayList<CopyOfBook> copyOfBookList = new ArrayList<>();
+private static double libraryAccountBudget;
 
-    public LibraryManagementSystem() {
+    private LibraryManagementSystem() {
+    }
+
+    public static double getLibraryAccountBudget() {
+        return libraryAccountBudget;
     }
 
 
-    public void payingLibraryFees (LibraryMember libraryMember, double amountPaid) {
-        libraryMember.libraryFees -= amountPaid;
+    public static void payingLibraryFees (LibraryMember libraryMember, double amountPaid) {
+        libraryMember.setLibraryFees(libraryMember.getLibraryFees() - amountPaid); ;
         libraryAccountBudget += amountPaid;
     }
 
-    public boolean checkBookAvailability(CopyOfBook copyOfBook) {
+    public static boolean checkBookAvailability(CopyOfBook copyOfBook) {
         if (copyOfBook.getAvailability()) {
             return true;
         }
         return false;
     }
 
-    public void checkOutBook(CopyOfBook copyOfBook, LibraryMember libraryMember) {
+    public static void checkOutBook(LibraryMember libraryMember) {
         if (libraryMember.verifyAccess()) {
             for (CopyOfBook eachBook : libraryMember.booksToBorrow) {
                 if (checkBookAvailability(eachBook)) {
                     libraryMember.borrowedBooks.add(eachBook);
                     changeStatusOfBookToUnavailable(eachBook);
+                    createReturnDate(eachBook);
+                    System.out.println("You have successfully checked out your books.");
                 }
             }
         }
     }
 
-    public void returnBook(CopyOfBook copyOfBook, LibraryMember libraryMember) {
+    public static void returnBook(CopyOfBook copyOfBook, LibraryMember libraryMember) {
         libraryMember.borrowedBooks.remove(copyOfBook);
         changeStatusOfBookToAvailable(copyOfBook);
+        removeReturnDate(copyOfBook);
+        System.out.println("You have returned your books.");
     }
 
-    public void changeStatusOfBookToUnavailable(CopyOfBook copyOfBook) {
+    public static void changeStatusOfBookToUnavailable(CopyOfBook copyOfBook) {
         copyOfBook.setAvailability(false);
     }
 
-    public void changeStatusOfBookToAvailable(CopyOfBook copyOfBook) {
+    public static void changeStatusOfBookToAvailable(CopyOfBook copyOfBook) {
         copyOfBook.setAvailability(true);
     }
 
-    public void createReturnDate(CopyOfBook copyOfBook) {
+    public static void createReturnDate(CopyOfBook copyOfBook) {
         copyOfBook.setDueDate(LocalDate.now().plusWeeks(3));
     }
 
-    public void removeReturnDate(CopyOfBook copyOfBook) {
+    public static void removeReturnDate(CopyOfBook copyOfBook) {
         copyOfBook.setDueDate(null);
     }
 
-    public void reserveBook(CopyOfBook copyOfBook, LibraryMember libraryMember) {
+    public static void reserveBook(CopyOfBook copyOfBook, LibraryMember libraryMember) {
         if (libraryMember.verifyAccess()) {
             if (!copyOfBook.getAvailability()) {
                 libraryMember.reservedBooks.add(copyOfBook);
@@ -65,4 +74,9 @@ private double libraryAccountBudget;
             }
         }
     }
+
+    List<CopyOfBook> listOfLateBooks = copyOfBookList.stream()
+            .filter(copyOfBook -> LocalDate.now().isAfter(copyOfBook.getDueDate()))
+            .toList();
+
 }

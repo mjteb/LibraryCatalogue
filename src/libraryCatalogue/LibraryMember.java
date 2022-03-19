@@ -1,58 +1,93 @@
 package libraryCatalogue;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class LibraryMember {
-    String name;
-    String cardNumber;
+    String firstName;
+    String lastName;
+    private String name;
+    private String cardNumber;
+    private String dateOfBirth;
     LocalDate membershipExpirationDate;
-    double libraryFees;
-    List<CopyOfBook> reservedBooks;
-    List<CopyOfBook> booksToBorrow;
-    List<CopyOfBook> borrowedBooks;
+    private double libraryFees = 0;
+    List<CopyOfBook> reservedBooks = new ArrayList<>();
+    List<CopyOfBook> booksToBorrow = new ArrayList<>();
+    List<CopyOfBook> borrowedBooks = new ArrayList<>();
     static final double MAX_AMOUNT_LIBRARY_FEES = 5.00;
     static final double LATE_FEE_PER_DAY = 0.75;
+    static Set<LibraryMember> listOfMembers = new HashSet<>();
+    private int uniqueID = 1000;
 
-
-    public LibraryMember(String name, String cardNumber, LocalDate membershipExpirationDate, double libraryFees, List<CopyOfBook> reservedBooks, List<CopyOfBook> booksToBorrow, List<CopyOfBook> borrowedBooks) {
-        this.name = name;
-        this.cardNumber = cardNumber;
-        this.membershipExpirationDate = membershipExpirationDate;
+    public LibraryMember(String firstName,
+                         String lastName,
+                         String dateOfBirth) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.name = lastName + ", " + firstName;
+        this.dateOfBirth = dateOfBirth;
         this.libraryFees = libraryFees;
-        this.reservedBooks = reservedBooks;
-        this.booksToBorrow = booksToBorrow;
-        this.borrowedBooks = borrowedBooks;
+        listOfMembers.add(this);
+        setCardNumber();
+        setMembershipExpirationDate();
     }
+
+    public String getDateOfBirth()  {
+        Pattern pattern = Pattern.compile("^\\d{2}\\d{2}\\d{4}$");
+        if (pattern.matcher(dateOfBirth).matches()) {
+            return dateOfBirth;
+        }
+        else {
+            throw new FormatDateException("Please respect the proper date format: ddmmyyyy");
+        }
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getCardNumber() {
         return cardNumber;
     }
 
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
+
+    public void setCardNumber() {
+
+        cardNumber = this.lastName.substring(0,3).toUpperCase() + this.firstName.charAt(0)+ this.getDateOfBirth() + this.setUniqueID();
+    }
+
+
+    public int setUniqueID() {
+        for (LibraryMember e : listOfMembers) {
+            if (e.getName().equals(this.name) && e.getDateOfBirth().equals(this.dateOfBirth)) {
+                uniqueID++;
+            }
+        }
+        return uniqueID;
     }
 
     public LocalDate getMembershipExpirationDate() {
         return membershipExpirationDate;
     }
 
-    public void setMembershipExpirationDate(LocalDate membershipExpirationDate) {
-        this.membershipExpirationDate = membershipExpirationDate;
+    public void setMembershipExpirationDate() {
+       membershipExpirationDate =  LocalDate.now().plusYears(1);
     }
 
     public double getLibraryFees() {
-        getLibraryFees();
+        calculateLibraryFees();
         return libraryFees;
+    }
+
+    public void setLibraryFees(double libraryFees) {
+        this.libraryFees = libraryFees;
     }
 
     public void calculateLibraryFees() {
@@ -75,14 +110,12 @@ public class LibraryMember {
     }
 
     public boolean verifyAccess () {
-        if (verifyExpirationDate() && getLibraryFees() > MAX_AMOUNT_LIBRARY_FEES) {
+        if (verifyExpirationDate() && getLibraryFees() < MAX_AMOUNT_LIBRARY_FEES) {
             return true;
         }
         System.out.println("There is a problem with your account. Please verify that your card is not expired and that your library fees are paid.");
         return false;
     }
-
-
 
 
 }

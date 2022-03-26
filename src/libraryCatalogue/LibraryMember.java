@@ -27,10 +27,10 @@ public class LibraryMember {
         this.lastName = lastName;
         this.name = lastName + ", " + firstName;
         this.dateOfBirth = dateOfBirth;
-        this.libraryFees = libraryFees;
         listOfMembers.add(this);
         setCardNumber();
         setMembershipExpirationDate();
+        LibraryManagementSystem.getLibraryMembersList().add(this);
     }
 
     public String getDateOfBirth()  {

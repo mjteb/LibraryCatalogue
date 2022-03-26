@@ -12,6 +12,18 @@ private static double libraryAccountBudget;
     private LibraryManagementSystem() {
     }
 
+    public static ArrayList<CopyOfBook> getCopyOfBookList() {
+        return copyOfBookList;
+    }
+
+    public static void setCopyOfBookList(ArrayList<CopyOfBook> copyOfBookList) {
+        LibraryManagementSystem.copyOfBookList = copyOfBookList;
+    }
+
+    public static ArrayList<LibraryMember> getLibraryMembersList() {
+        return libraryMembersList;
+    }
+
     public static double getLibraryAccountBudget() {
         return libraryAccountBudget;
     }
@@ -70,13 +82,19 @@ private static double libraryAccountBudget;
             if (!copyOfBook.getAvailability()) {
                 libraryMember.reservedBooks.add(copyOfBook);
                 copyOfBook.listOfReservations.add(libraryMember);
-                System.out.println("Your place in the reservation list for this title is : " + copyOfBook.listOfReservations.size());
+                System.out.println("\nThe requested title has been reserved. Your place in the reservation list for this title is : " + copyOfBook.listOfReservations.size());
             }
         }
+    }
+
+    public static void addBooksToCatalogue(CopyOfBook copyOfBook) {
+        copyOfBookList.add(copyOfBook);
     }
 
     List<CopyOfBook> listOfLateBooks = copyOfBookList.stream()
             .filter(copyOfBook -> LocalDate.now().isAfter(copyOfBook.getDueDate()))
             .toList();
+
+
 
 }

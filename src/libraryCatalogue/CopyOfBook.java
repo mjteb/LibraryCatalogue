@@ -8,12 +8,24 @@ public class CopyOfBook extends Book {
     LocalDate dueDate;
     String callNumber;
     double price;
+    int baseBarcode = 1;
+    private final int barcode;
     ArrayList<LibraryMember> listOfReservations = new ArrayList<>();
 
+    public String toString() {
+        return "Title: " + getTitle() + "\nAuthor: " +getAuthor() + "\nCall number: " + getCallNumber() + "\nLanguage: " + getLanguage()
+                + "\nBarcode: "+ getBarcode();
+    }
 
     public CopyOfBook(String title, String author, String isbn, String callNumber, Language language) {
         super(title, author, isbn, language);
         this.callNumber = callNumber;
+        this.barcode = baseBarcode;
+        baseBarcode++;
+    }
+
+    public int getBarcode() {
+        return barcode;
     }
 
     public boolean getAvailability() {

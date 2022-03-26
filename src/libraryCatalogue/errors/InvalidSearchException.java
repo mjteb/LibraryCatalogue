@@ -1,8 +1,9 @@
-package libraryCatalogue;
+package libraryCatalogue.errors;
 
-public class InvalidSearchError extends RuntimeException {
-    String message;
-    public InvalidSearchError (String message) {
+public class InvalidSearchException extends RuntimeException {
+    private String message;
+
+    public InvalidSearchException(final String message) {
         this.message = message;
     }
 

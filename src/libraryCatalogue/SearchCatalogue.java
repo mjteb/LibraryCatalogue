@@ -1,5 +1,10 @@
 package libraryCatalogue;
 
+import libraryCatalogue.errors.InvalidSearchException;
+import libraryCatalogue.model.CopyOfBook;
+import libraryCatalogue.model.LibraryMember;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,13 +22,13 @@ public class SearchCatalogue {
         scanner.close();
     }
 
-    public static void checkLibraryMemberCardNumber(String libraryMemberCardNumber) {
+    public static void checkLibraryMemberCardNumber(final String libraryMemberCardNumber) {
         boolean isLibraryMember = LibraryManagementSystem.getLibraryMembersList().stream()
                 .anyMatch(libraryMember -> libraryMember.getCardNumber().equals(libraryMemberCardNumber));
         if (isLibraryMember) {
             startSearch();
         } else {
-            throw new InvalidSearchError("\nPlease enter a valid library card number");
+            throw new InvalidSearchException("\nPlease enter a valid library card number");
         }
     }
 
@@ -35,51 +40,39 @@ public class SearchCatalogue {
         scanner.close();
     }
 
-
-    public static void typeOfSearch(int typeOfSearchRequest) {
+    public static void typeOfSearch(final int typeOfSearchRequest) {
         if (typeOfSearchRequest == 1) {
-            searchByTitle();
+            search("title");
         } else if (typeOfSearchRequest == 2) {
-            searchByAuthor();
+            search("author");
         } else {
-            throw new InvalidSearchError("Please select a valid search option.");
+            throw new InvalidSearchException("Please select a valid search option.");
         }
     }
 
-    public static void searchByTitle() {
+    public static void search(final String typeRecherche) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\nPlease enter the title you would like to search for.");
-        String title = scanner.nextLine();
-        List<CopyOfBook> searchResults = LibraryManagementSystem.getCopyOfBookList().stream()
-                .filter(copyOfBook -> copyOfBook.getTitle().equals(title))
-                .toList();
+        System.out.println("\nPlease enter the" + typeRecherche + " you would like to search for.");
+        String recherche = scanner.nextLine();
+        List<CopyOfBook> searchResults = new ArrayList<>();
+
+        if (typeRecherche.equals("title")) {
+            searchResults = LibraryManagementSystem.getCopyOfBookList().stream()
+                    .filter(copyOfBook -> copyOfBook.getTitle().equals(recherche))
+                    .toList();
+        } else if (typeRecherche.equals("author")) {
+            searchResults = LibraryManagementSystem.getCopyOfBookList().stream()
+                    .filter(copyOfBook -> copyOfBook.getAuthor().equals(recherche))
+                    .toList();
+        }
+
         if (searchResults.isEmpty()) {
             System.out.println("\nSorry, your search yielded zero results.");
         } else {
             System.out.println("\nYour search yielded " + searchResults.size() + " result(s):");
-            searchResults.stream()
-                    .forEach(System.out::print);
+            searchResults.forEach(System.out::print);
         }
         requestToCheckAvailability();
-        scanner.close();
-    }
-
-
-    public static void searchByAuthor() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("\nPlease enter the author you would like to search for.");
-        String author = scanner.nextLine();
-        List<CopyOfBook> searchResults = LibraryManagementSystem.getCopyOfBookList().stream()
-                .filter(copyOfBook -> copyOfBook.getAuthor().equals(author))
-                .toList();
-        if (searchResults.isEmpty()) {
-            System.out.println("\nSorry, your search yielded zero results.");
-        } else {
-            System.out.println("\nYour search yielded " + searchResults.size() + " result(s):");
-            searchResults.stream()
-                    .forEach(System.out::print);
-            requestToCheckAvailability();
-        }
         scanner.close();
     }
 
@@ -91,57 +84,57 @@ public class SearchCatalogue {
         scanner.close();
     }
 
-    public static void checkBarcode(int barcode) {
+    public static void checkBarcode(final int barcode) {
         boolean bookAvailable = LibraryManagementSystem.getCopyOfBookList().stream()
                 .anyMatch(copyOfBook -> (copyOfBook.getBarcode() != barcode));
         if (bookAvailable) {
             checkAvailability(barcode);
         } else {
-            throw new InvalidSearchError("Please enter a valid barcode");
+            throw new InvalidSearchException("Please enter a valid barcode");
         }
     }
 
-    public static void checkAvailability(int barcode) {
+    public static void checkAvailability(final int barcode) {
         Scanner scanner = new Scanner(System.in);
         boolean bookAvailable = LibraryManagementSystem.getCopyOfBookList().stream()
                 .anyMatch(copyOfBook -> copyOfBook.getAvailability());
         if (bookAvailable) {
             System.out.println("\nThe following book is available. Enter Y to add it to your basket to checkout.");
-            String reset = scanner.nextLine();
+            scanner.nextLine();
             String addToBasket = scanner.nextLine();
             requestAddingBookToBasket(addToBasket, barcode);
         } else {
             System.out.println("\nThe following book is unavailable. Enter Y to reserve the book or S to make another search.");
-            String reset2 = scanner.nextLine();
+            scanner.nextLine();
             String reserveBook = scanner.nextLine();
             if (reserveBook.equals("S")) {
                 requestNewSearch();
             } else if (reserveBook.equals("Y")) {
                 requestBookReservation(reserveBook, barcode);
             } else {
-                throw new InvalidSearchError("Please enter a valid search option");
+                throw new InvalidSearchException("Please enter a valid search option");
             }
         }
         scanner.close();
     }
 
 
-    public static void requestAddingBookToBasket(String addToBasket, int barcode) {
+    public static void requestAddingBookToBasket(final String addToBasket, final int barcode) {
         if (addToBasket.equals("Y")) {
             for (LibraryMember member : LibraryManagementSystem.getLibraryMembersList()) {
                 for (CopyOfBook copyOfBook : LibraryManagementSystem.getCopyOfBookList())
                     if (member.getCardNumber().equals(libraryMemberCardNumber) && copyOfBook.getBarcode() == barcode) {
-                        member.booksToBorrow.add(copyOfBook);
+                        member.getBooksToBorrow().add(copyOfBook);
                         System.out.println("\nYour book was successfully added to your basket to checkout.");
                         requestNewSearch();
                     }
             }
         } else {
-            throw new InvalidSearchError("Please enter a valid request.");
+            throw new InvalidSearchException("Please enter a valid request.");
         }
     }
 
-    public static void requestBookReservation(String reserveBook, int barcode) {
+    public static void requestBookReservation(final String reserveBook, final int barcode) {
         if (reserveBook.equals("Y")) {
             for (LibraryMember member : LibraryManagementSystem.getLibraryMembersList()) {
                 for (CopyOfBook copyOfBook : LibraryManagementSystem.getCopyOfBookList())
@@ -151,7 +144,7 @@ public class SearchCatalogue {
                     }
             }
         } else {
-            throw new InvalidSearchError("Please enter a valid request.");
+            throw new InvalidSearchException("Please enter a valid request.");
         }
     }
 

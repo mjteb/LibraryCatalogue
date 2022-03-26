@@ -1,5 +1,7 @@
-package libraryCatalogue;
+package libraryCatalogue.model;
 
+
+import libraryCatalogue.Language;
 
 public abstract class Book {
     private String title;
@@ -7,7 +9,7 @@ public abstract class Book {
     private String isbn;
     private Language language;
 
-    public Book(String title, String author, String isbn, Language language) {
+    public Book(final String title, final String author, final String isbn, final Language language) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;

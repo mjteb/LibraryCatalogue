@@ -20,27 +20,6 @@ public class Main {
 
         System.out.println(libraryMember5.getCardNumber());
 
-
-//        for (CopyOfBook e : libraryMember1.borrowedBooks) {
-//            System.out.println(e.getTitle());
-//        }
-//
-//        System.out.println(copyOfBook1.getDueDate());
-//LibraryManagementSystem.reserveBook(copyOfBook1, libraryMember2);
-//
-//        for (LibraryMember e : copyOfBook1.listOfReservations) {
-//            System.out.println(e.getName());
-//        }
-//
-//
-//        LibraryManagementSystem.returnBook(copyOfBook1, libraryMember1);
-//libraryMember1.setLibraryFees(50);
-//
-//LibraryManagementSystem.payingLibraryFees(libraryMember1, 49);
-//        libraryMember1.booksToBorrow.add(copyOfBook1);
-//        LibraryManagementSystem.checkOutBook(libraryMember1);
-//        System.out.println(LibraryManagementSystem.getLibraryAccountBudget());
-
         LibraryManagementSystem.addBooksToCatalogue(copyOfBook1);
         System.out.println(libraryMember1.getCardNumber());
         copyOfBook1.availability = false;

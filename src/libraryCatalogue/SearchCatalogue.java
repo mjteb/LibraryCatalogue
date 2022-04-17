@@ -107,12 +107,12 @@ public class SearchCatalogue {
                 .anyMatch(copyOfBook -> copyOfBook.getAvailability());
         if (bookAvailable) {
             System.out.println("\nThe following book is available. Enter Y to add it to your basket to checkout.");
-            String reset = scanner.nextLine();
+            scanner.nextLine();
             String addToBasket = scanner.nextLine();
             requestAddingBookToBasket(addToBasket, barcode);
         } else {
             System.out.println("\nThe following book is unavailable. Enter Y to reserve the book or S to make another search.");
-            String reset2 = scanner.nextLine();
+            scanner.nextLine();
             String reserveBook = scanner.nextLine();
             if (reserveBook.equals("S")) {
                 requestNewSearch();

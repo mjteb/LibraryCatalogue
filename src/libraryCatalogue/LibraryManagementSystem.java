@@ -24,11 +24,6 @@ private static double libraryAccountBudget;
         return libraryMembersList;
     }
 
-    public static double getLibraryAccountBudget() {
-        return libraryAccountBudget;
-    }
-
-
     public static void payingLibraryFees (LibraryMember libraryMember, double amountPaid) {
         libraryMember.setLibraryFees(libraryMember.getLibraryFees() - amountPaid); ;
         libraryAccountBudget += amountPaid;
@@ -94,7 +89,4 @@ private static double libraryAccountBudget;
     List<CopyOfBook> listOfLateBooks = copyOfBookList.stream()
             .filter(copyOfBook -> LocalDate.now().isAfter(copyOfBook.getDueDate()))
             .toList();
-
-
-
 }

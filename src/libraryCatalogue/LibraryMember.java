@@ -43,26 +43,18 @@ public class LibraryMember {
         }
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-
     public String getName() {
         return name;
     }
-
 
     public String getCardNumber() {
         return cardNumber;
     }
 
-
     public void setCardNumber() {
 
         cardNumber = this.lastName.substring(0,3).toUpperCase() + this.firstName.charAt(0)+ this.getDateOfBirth() + this.setUniqueID();
     }
-
 
     public int setUniqueID() {
         for (LibraryMember e : listOfMembers) {
@@ -71,10 +63,6 @@ public class LibraryMember {
             }
         }
         return uniqueID;
-    }
-
-    public LocalDate getMembershipExpirationDate() {
-        return membershipExpirationDate;
     }
 
     public void setMembershipExpirationDate() {
@@ -99,7 +87,6 @@ public class LibraryMember {
         }
     }
 
-
     public boolean verifyExpirationDate() {
         if (LocalDate.now().isAfter(this.membershipExpirationDate)) {
             System.out.println("Your card is expired");
@@ -116,6 +103,4 @@ public class LibraryMember {
         System.out.println("There is a problem with your account. Please verify that your card is not expired and that your library fees are paid.");
         return false;
     }
-
-
 }

@@ -7,7 +7,6 @@ public class CopyOfBook extends Book {
     boolean availability = true;
     LocalDate dueDate;
     String callNumber;
-    double price;
     int baseBarcode = 1;
     private final int barcode;
     ArrayList<LibraryMember> listOfReservations = new ArrayList<>();
@@ -46,9 +45,5 @@ public class CopyOfBook extends Book {
 
     public String getCallNumber() {
         return callNumber;
-    }
-
-    public void setCallNumber(String callNumber) {
-        this.callNumber = callNumber;
     }
 }
